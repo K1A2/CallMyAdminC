@@ -9,8 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
 public class MainActivity extends AppCompatActivity {
 
     private AddServer addServer = null;
@@ -29,11 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private void start() {
         //서버연결
         try {
-            JSONObject a = new JSONObject();
-            a.put("Hello", "World!");
 
-            HttpRequester httpRequester = new HttpRequester(a, "http://aperturedev.co.kr/callmyadmin/create/server-regi.jsp");
-            //httpRequester.start();
         } catch(Exception ex){}
     }
 
