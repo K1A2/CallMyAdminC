@@ -7,34 +7,9 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/List_server"></ListView>
-
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/Layout_search">
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="4dp"
-            android:hint="서버이름 입력"
-            android:id="@+id/Edit_svname"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="검색"
-            android:id="@+id/Button_search"/>
-
-    </LinearLayout>
-
-    <ListView
-        android:layout_marginTop="3dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/Layout_search"
-        android:id="@+id/List_sv"></ListView>-->
+        android:id="@+id/List_server"
+        android:dividerHeight="5dp"
+        android:padding="2dp"
+        android:divider="#00ffffff"></ListView>
 
 </RelativeLayout>
