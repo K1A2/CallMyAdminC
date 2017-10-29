@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             a.put("Hello", "World!");
 
             HttpRequester httpRequester = new HttpRequester(a, "http://aperturedev.co.kr/callmyadmin/create/server-regi.jsp");
-            //httpRequester.start();
+            httpRequester.start();
         } catch(Exception ex){}
     }
 
