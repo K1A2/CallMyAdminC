@@ -42,7 +42,6 @@ public class HttpRequester extends Thread {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("Content-Length", this.jsonObj.toString().length() + "");
             conn.setRequestProperty("Content-Language", "ko-KR");
             conn.setUseCaches(false);
             conn.setDoOutput(true);
