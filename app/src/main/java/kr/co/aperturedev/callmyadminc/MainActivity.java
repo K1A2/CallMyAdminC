@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     //액션바 메뉴생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_main, menu);
         return super.onCreateOptionsMenu(menu);
