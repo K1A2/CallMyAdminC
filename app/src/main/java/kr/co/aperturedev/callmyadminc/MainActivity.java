@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     //액션바 메뉴생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_main, menu);
         return super.onCreateOptionsMenu(menu);
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 //서버 추가하는 프레그먼트 다이얼로그 띄움
                FragmentManager fragmentManager = getSupportFragmentManager();
                 addServer = new AddServer();
-                addServer.show(fragmentManager, "ssss");
+                addServer.show(fragmentManager, "addServer");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
