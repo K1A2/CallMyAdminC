@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
     //잡것(?)
     private AddServer addServer = null;
     private String uuid;
+    private FragmentManager fragmentManager;
     private LoginDialog loginDialog;
     private SharedPreferences prefUuid = null;
     private ServerListItem serverListItem;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
         uuid = telephonyManager.getDeviceId();
 
         //로그인창 띄움
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         loginDialog = new LoginDialog();
         loginDialog.setCancelable(false);
         loginDialog.show(fragmentManager, "login");
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
 
     //로그인 창에서 로그인 버튼 클릭시
     @Override
-    public void OnLoginClickListener() {
+    public void OnLoginClickListener(String id, String password) {
         if (loginDialog != null) {
             loginDialog.dismiss();
 
@@ -216,6 +217,8 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
             //실제 실패시에는 그에맞는 처리가 필요
             prefUuid.edit().putString("UUID", uuid).commit();
             main();
+        } else {//시류ㅐ했을시 로그인창 다시띄워버리기
+            loginDialog.show(fragmentManager, "login");
         }
     }
 }
