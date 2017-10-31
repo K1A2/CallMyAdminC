@@ -93,6 +93,7 @@ public class HttpRequester extends Thread {
         Message msg = Message.obtain();
         msg.what = isSucc ? 1 : 0;
         msg.obj = returnData;
+        //
 
         this.backgroundHandler.sendMessage(msg);
     }

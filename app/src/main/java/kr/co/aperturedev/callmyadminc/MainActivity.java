@@ -1,19 +1,11 @@
 package kr.co.aperturedev.callmyadminc;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,15 +14,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
-import kr.co.aperturedev.callmyadminc.internet.http.HttpRequester;
-import kr.co.aperturedev.callmyadminc.internet.http.OnHttpRequestListener;
-import kr.co.aperturedev.callmyadminc.internet.http.RequestURLS;
+import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
+import kr.co.aperturedev.callmyadminc.module.configure.ConfigManager;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListAdapter;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListItem;
 
-public class MainActivity extends AppCompatActivity implements OnHttpRequestListener, LoginDialog.OnLoginClickedListener {
+public class MainActivity extends AppCompatActivity {
 
     //뷰
     private ListView listServer;
@@ -39,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
     private AddServer addServer = null;
     private String uuid;
     private FragmentManager fragmentManager;
-    private LoginDialog loginDialog;
     private SharedPreferences prefUuid = null;
     private ServerListItem serverListItem;
     private ServerListAdapter serverListAdapter = null;
@@ -49,73 +37,24 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //UUID존재 검사
-        prefUuid = getSharedPreferences("UUID", MODE_PRIVATE);
-        uuid = prefUuid.getString("UUID", null);
+        // UUID 값 이 있는지 확인합니다.
+        ConfigManager cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, this);
+        String deviceUUID = cfgMgr.get().getString(ConfigKeys.KEY_DEVICE_UUID, null);
 
-        if (uuid == null) {//UUID 없으면 하는일
-            //폰 고유 번호를 가져오기위한 권한 요청
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                int permisionRequest = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE);
-
-                if (permisionRequest == PackageManager.PERMISSION_DENIED)
-                    if (shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)) {
-                        AlertDialog.Builder permissioCheck = new AlertDialog.Builder(MainActivity.this);
-                        permissioCheck.setTitle("권한요청")
-                                .setMessage("사용자 구분을 위한 장치 고유의 번호를 얻기위해 권한이 필요합니다. 만약 거부한다면, 당신은 이 앱을 사용할 수 가 없습니다.")
-                                .setCancelable(false)
-                                .setPositiveButton("동의", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1000);
-                                        }
-                                    }
-                                })
-                                .setNegativeButton("거부", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(MainActivity.this, "앱이 종료됩니다", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                })
-                                .create()
-                                .show();
-                    } else {
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 100);
-                    }
-                else {
-                    setUuid();
-                }
-            } else {
-                setUuid();
-            }
-        } else {//UUID있음 바로 메인으로감
-            main();
+        if(deviceUUID == null) {
+            // 로그인 화면으로 이동
+        } else {
+            // 앱을 시작함.
         }
     }
 
-    //권한 허가했을시 처리
-    @SuppressLint("MissingPermission")
-    private void setUuid() {
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        uuid = telephonyManager.getDeviceId();
-
-        //로그인창 띄움
-        fragmentManager = getSupportFragmentManager();
-        loginDialog = new LoginDialog();
-        loginDialog.setCancelable(false);
-        loginDialog.show(fragmentManager, "login");
-    }
-
-    //모든처리
-    private void main() {
+    /*
+        해당 사용자가 가지고 있는 서버의 목록과 정보를
+        가져와서 화면에 표시합니다.
+     */
+    private void onReload() {
         //디버그용
         Toast.makeText(MainActivity.this, uuid, Toast.LENGTH_SHORT).show();
-
-        //HTTP에 요청
-        start();
 
         //뷰 초기화
         listServer = (ListView) findViewById(R.id.List_server);
@@ -150,31 +89,6 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
         });
     }
 
-    private void start() {
-        //서버연결
-        try {
-            HttpRequester reqtu
-                     = new HttpRequester(null, RequestURLS.DEVICE_REGIST);
-            reqtu.setListener(this);
-            reqtu.start();
-        } catch(Exception ex){}
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 100:
-
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setUuid();
-                } else {
-                    Toast.makeText(MainActivity.this, "앱이 종료됩니다.", Toast.LENGTH_LONG).show();
-                    finish();
-                }
-                return;
-        }
-    }
-
     //액션바 메뉴생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -199,26 +113,6 @@ public class MainActivity extends AppCompatActivity implements OnHttpRequestList
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onRequest(boolean isSucc, JSONObject jsonObj) {
-
-    }
-
-    //로그인 창에서 로그인 버튼 클릭시
-    @Override
-    public void OnLoginClickListener(String id, String password) {
-        if (loginDialog != null) {
-            loginDialog.dismiss();
-
-            //디버그용 UUID, 로그인은 무조건 성공했다고 가정.
-            //실제 실패시에는 그에맞는 처리가 필요
-            prefUuid.edit().putString("UUID", uuid).commit();
-            main();
-        } else {//시류ㅐ했을시 로그인창 다시띄워버리기
-            loginDialog.show(fragmentManager, "login");
         }
     }
 }
