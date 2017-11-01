@@ -1,6 +1,7 @@
 package kr.co.aperturedev.callmyadminc;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigManager;
+import kr.co.aperturedev.callmyadminc.view.activitys.LoginActivity;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListAdapter;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListItem;
 
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(deviceUUID == null) {
             // 로그인 화면으로 이동
+            Intent login = new Intent(this, LoginActivity.class);
+            startActivity(login);
         } else {
             // 앱을 시작함.
         }
@@ -114,5 +118,10 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
