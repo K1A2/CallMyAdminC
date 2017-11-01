@@ -2,7 +2,6 @@ package kr.co.aperturedev.callmyadminc;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -28,9 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     //잡것(?)
     private AddServer addServer = null;
-    private String uuid;
-    private FragmentManager fragmentManager;
-    private SharedPreferences prefUuid = null;
     private ServerListItem serverListItem;
     private ServerListAdapter serverListAdapter = null;
 
@@ -57,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
         가져와서 화면에 표시합니다.
      */
     private void onReload() {
-        //디버그용
-        Toast.makeText(MainActivity.this, uuid, Toast.LENGTH_SHORT).show();
-
         //뷰 초기화
         listServer = (ListView) findViewById(R.id.List_server);
 
