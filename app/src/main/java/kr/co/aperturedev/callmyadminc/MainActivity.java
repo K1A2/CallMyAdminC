@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
@@ -24,9 +25,12 @@ public class MainActivity extends AppCompatActivity {
 
     //뷰
     private ListView listServer;
+    private TextView txtName;
 
     //잡것(?)
     private AddServer addServer = null;
+    private String userName = "";
+    private ConfigManager cfgMgr;
     private ServerListItem serverListItem;
     private ServerListAdapter serverListAdapter = null;
 
@@ -36,15 +40,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // UUID 값 이 있는지 확인합니다.
-        ConfigManager cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, this);
+        cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, this);
         String deviceUUID = cfgMgr.get().getString(ConfigKeys.KEY_DEVICE_UUID, null);
 
         if(deviceUUID == null) {
             // 로그인 화면으로 이동
             Intent login = new Intent(this, LoginActivity.class);
-            startActivity(login);
+            startActivityForResult(login, 1000);
         } else {
             // 앱을 시작함.
+            onReload();
         }
     }
 
@@ -53,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
         가져와서 화면에 표시합니다.
      */
     private void onReload() {
+        //닉네임=UUID라고 가정(실제론 서버에서 다 가져옴)
+        txtName = (TextView)findViewById(R.id.Text_name);//일딴 닉넴표시 테스트 용도
+        if (userName.length() == 0) {
+            userName = cfgMgr.get().getString(ConfigKeys.KEY_DEVICE_UUID, null);
+        }
+        txtName.setText(userName + "님 서버 목록");
+
         //뷰 초기화
         listServer = (ListView) findViewById(R.id.List_server);
 
@@ -116,5 +128,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 1000:
+                    //닉네임 가져옴
+                    userName = data.getStringExtra("Name");
+                    onReload();
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            switch (requestCode) {
+                case 1000:
+                    finish();
+                    break;
+            }
+        }
     }
 }

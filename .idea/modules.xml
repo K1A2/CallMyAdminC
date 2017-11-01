@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/3rdparty_login_library_android_4.1.4/3rdparty_login_library_android_4.1.4.iml" filepath="$PROJECT_DIR$/3rdparty_login_library_android_4.1.4/3rdparty_login_library_android_4.1.4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CallMyAdminC.iml" filepath="$PROJECT_DIR$/CallMyAdminC.iml" />
+      <module fileurl="file://C:\Users\jckim\AndroidStudioProjects\CallMyAdminC\.idea\CallMyAdminC.iml" filepath="C:\Users\jckim\AndroidStudioProjects\CallMyAdminC\.idea\CallMyAdminC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>
