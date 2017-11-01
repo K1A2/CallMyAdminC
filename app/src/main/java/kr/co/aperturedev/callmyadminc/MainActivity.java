@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
                 return true;
             }
-        });
+        });//
     }
 
     //액션바 메뉴생성
