@@ -13,6 +13,7 @@ public interface RequestURLS {
     // Update
 
     // Read
+    String DEVICE_CHECK_REGIST = DEFAULT_URL + "read/device-isregist.jsp";
 
     // Delete
 }

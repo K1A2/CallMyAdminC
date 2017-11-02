@@ -22,7 +22,6 @@ import kr.co.aperturedev.callmyadminc.view.list.ServerListAdapter;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListItem;
 
 public class MainActivity extends AppCompatActivity {
-
     //뷰
     private ListView listServer;
     private TextView txtName;
@@ -50,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // 앱을 시작함.
             onReload();
+
+            cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, null);
         }
     }
 

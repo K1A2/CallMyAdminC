@@ -1,26 +1,27 @@
 package kr.co.aperturedev.callmyadminc.view.activitys;
 
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.nhn.android.naverlogin.OAuthLogin;
 import com.nhn.android.naverlogin.OAuthLoginHandler;
 import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 
+import org.json.JSONObject;
+
 import kr.co.aperturedev.callmyadminc.R;
 import kr.co.aperturedev.callmyadminc.core.context.APIKeys;
+import kr.co.aperturedev.callmyadminc.internet.http.HttpRequester;
+import kr.co.aperturedev.callmyadminc.internet.http.OnHttpRequestListener;
+import kr.co.aperturedev.callmyadminc.internet.http.RequestURLS;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigManager;
+import kr.co.aperturedev.callmyadminc.view.custom.dialog.custom.NicknameWriteDialog;
 
 /**
  * Created by 5252b on 2017-10-31.
@@ -59,15 +60,15 @@ public class LoginActivity extends AppCompatActivity {
             setResult(RESULT_CANCELED, i);
             finish();
         } else {
-            toast.makeText(LoginActivity.this, "로그인을 안하면 앱 사용이 불가합니다. 한번더 클릭면 앱이 종료됩니다.", Toast.LENGTH_LONG).show();
+            toast.makeText(LoginActivity.this, "어플리케이션을 종료하려면 한번 더 누르세요.", Toast.LENGTH_LONG).show();
             backKeyPress = System.currentTimeMillis();
         }
     }
 
     class OnNaverLoginHandler extends OAuthLoginHandler {
-        private Context context = null;
+        private Activity context = null;
 
-        public OnNaverLoginHandler(Context context) {
+        public OnNaverLoginHandler(Activity context) {
             this.context = context;
         }
 
@@ -79,11 +80,13 @@ public class LoginActivity extends AppCompatActivity {
                 ReadUserdataThread reader = new ReadUserdataThread();
                 reader.execute(accessToken);
             } else {
-                Log.e("cma", "로그인에 실패하였습니다.");
+                Toast.makeText(LoginActivity.this, "로그인 처리 실패 -1", Toast.LENGTH_LONG).show();
             }
         }
 
-        private class ReadUserdataThread extends AsyncTask<String, Void, String> {
+        private class ReadUserdataThread extends AsyncTask<String, Void, String> implements View.OnClickListener, OnHttpRequestListener {
+            private NicknameWriteDialog nickWriteDialog = null;
+            private String naverUUID = null;
 
             @Override
             protected void onProgressUpdate(Void... values) {
@@ -93,68 +96,87 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(String... strings) {
                 String accessToken = strings[0];
-
                 String response = naverLogin.requestApi(context, accessToken, "https://openapi.naver.com/v1/nid/me");
+
                 return response;
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                // 여기서 액티비티를 끝내고 값을 리턴합니다.
-                Log.d("cma", "로그인 성공!!!");
-                Log.d("cma", s);
+            protected void onPostExecute(String response) {
+                // 해당 UUID 값이 이미 가입된 계정인지 확인합니다.
+                try {
+                    JSONObject respJSONObj = new JSONObject(response);
+                    String uuid = ((JSONObject) respJSONObj.get("response")).getString("enc_id");
+                    this.naverUUID = uuid;  // 전역으로 올려줌
 
-                //xml파일 전개
-                final LinearLayout linearLayout = (LinearLayout)View.inflate(LoginActivity.this, R.layout.dialog_name, null);
-                final EditText editId = (EditText)linearLayout.findViewById(R.id.Edit_nickname);
+                    // 서버에 요청 합니다.
+                    JSONObject requestJSON = new JSONObject();
+                    requestJSON.put("target-uuid", uuid);
 
-                AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
-                dialog.setTitle("닉네임 입력");
-                dialog.setView(linearLayout);//다이얼로그 뷰 설정
-                dialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    HttpRequester requester = new HttpRequester(requestJSON, RequestURLS.DEVICE_CHECK_REGIST);
+                    requester.setListener(this);
+                    requester.start();
+                } catch(Exception ex) {
+                    // 오류 발생시 출력 후 종료
+                    Toast.makeText(LoginActivity.this, "응답 처리 에러 -1", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
 
+            @Override
+            public void onClick(View view) {
+                if(view.getId() == R.id.dialog_nickname_buttons_ok) {
+                    // 확인 버튼을 눌렀을 경우
+                    String nickname = this.nickWriteDialog.getNickname().toString();
+                    if(nickname.length() == 0) {
+                        Toast.makeText(LoginActivity.this, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        this.nickWriteDialog.disable();
+                        loginSuccess(this.naverUUID, nickname);
                     }
-                });
-                dialog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            }
 
-                    }
-                });
+            @Override
+            public void onRequest(boolean isSucc, JSONObject jsonObj) {
+                if(!isSucc) {
+                    // 요청 실패시 실행 중지
+                    Toast.makeText(LoginActivity.this, "HTTP 요청 Fail!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                //다이얼로그 버튼 리스너 커스텀
-                final AlertDialog alertDialog = dialog.create();
-                alertDialog.show();
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String name = editId.getText().toString();
-                        if (name.isEmpty()||name.length() == 0) {
-                            Toast.makeText(LoginActivity.this, "입력해주세요", Toast.LENGTH_SHORT).show();
-                        } else {
-                            alertDialog.dismiss();
-                            //UUID를 닉네임으로 가정
-                            ConfigManager cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, LoginActivity.this);
-                            cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, name);
+                try {
+                    if (!jsonObj.getBoolean("is-regist")) {
+                        // 가입되지 않은 계정
+                        openNicknameWriteDialog();
+                    } else {
+                        // 가입된 게정
+                        String nickname = jsonObj.getString("admin-nickname");
+                        loginSuccess(this.naverUUID, nickname);
+                    }
+                } catch(Exception ex) {
+                    // 오류 발생시 강행
+                    openNicknameWriteDialog();
+                }
+            }
 
-                            //닉넴 메인으로 넘겨줌 (나중에는 서버가 처리할부분)
-                            i.putExtra("Name", name);
-                            setResult(RESULT_OK, i);
-                            finish();
-                        }
-                    }
-                });
-                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(LoginActivity.this, "앱을강제종료 합니다", Toast.LENGTH_SHORT).show();
-                        alertDialog.dismiss();
-                        setResult(RESULT_CANCELED, i);
-                        finish();
-                    }
-                });
+            private void openNicknameWriteDialog() {
+                this.nickWriteDialog = new NicknameWriteDialog(context);
+                this.nickWriteDialog.build();     // 다이얼로그 생성
+                this.nickWriteDialog.setEventHandler(this);
+                this.nickWriteDialog.show();
+            }
+
+            private void loginSuccess(String uuid, String nickname) {
+                // UUID 값 저장
+                ConfigManager cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, LoginActivity.this);
+                cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, uuid);
+
+                // 닉넴 메인으로 넘겨줌 (나중에는 서버가 처리할부분)
+                i.putExtra("Name", nickname);
+                setResult(RESULT_OK, i);
+                finish();
             }
         }
     }

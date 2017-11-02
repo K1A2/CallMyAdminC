@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:orientation="vertical"
-    android:padding="10dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="사용하실 닉네임을 입력해 주세요. 취소시 앱이 종료됩니다."/>
-
-    <EditText
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="사용할 닉네임"
-        android:id="@+id/Edit_nickname"/>
+        android:orientation="vertical"
+        android:id="@+id/dialog_nickname_container"
+        android:layout_margin="30dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="마인크래프트 닉네임을 입력하세요."
+            android:textColor="@color/colorPrimary" />
 
-</LinearLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="닉네임을 입력하세요."
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="15dp"
+            android:id="@+id/nickname_editor"
+            android:background="#ecf0f1"
+            android:padding="10dp"
+            android:textSize="13sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:layout_marginTop="10dp"
+            android:id="@+id/dialog_close_buttons">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/dialog_nickname_buttons_ok"
+                android:text="확인"
+                android:layout_weight="1"
+                android:background="@color/colorGreen"
+                android:textColor="#ffffff"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
