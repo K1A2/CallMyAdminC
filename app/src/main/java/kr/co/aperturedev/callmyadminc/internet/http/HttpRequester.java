@@ -93,7 +93,6 @@ public class HttpRequester extends Thread {
         Message msg = Message.obtain();
         msg.what = isSucc ? 1 : 0;
         msg.obj = returnData;
-        //
 
         this.backgroundHandler.sendMessage(msg);
     }
@@ -102,7 +101,9 @@ public class HttpRequester extends Thread {
         @Override
         public void handleMessage(Message msg) {
             JSONObject jsonObj = (JSONObject) msg.obj;
-            listener.onRequest((msg.what == 0 ? false : true), jsonObj);
+            if(listener == null) return;
+
+            listener.onResponse((msg.what == 0 ? false : true), jsonObj);
         }
     }
 }

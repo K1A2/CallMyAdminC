@@ -15,13 +15,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import kr.co.aperturedev.callmyadminc.module.authme.AuthmeModule;
+import kr.co.aperturedev.callmyadminc.module.authme.AuthmeObject;
+import kr.co.aperturedev.callmyadminc.module.authme.OnAuthmeListener;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigManager;
 import kr.co.aperturedev.callmyadminc.view.activitys.LoginActivity;
+import kr.co.aperturedev.callmyadminc.view.custom.dialog.main.DialogManager;
+import kr.co.aperturedev.callmyadminc.view.custom.dialog.main.clicklistener.OnYesClickListener;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListAdapter;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnAuthmeListener, OnYesClickListener {
     //뷰
     private ListView listServer;
     private TextView txtName;
@@ -47,10 +52,9 @@ public class MainActivity extends AppCompatActivity {
             Intent login = new Intent(this, LoginActivity.class);
             startActivityForResult(login, 1000);
         } else {
-            // 앱을 시작함.
-            onReload();
-
-            cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, null);
+            // 인증 모듈을 사용하여 장치 인증
+            AuthmeModule authmeMd = new AuthmeModule(deviceUUID, this);
+            authmeMd.run();
         }
     }
 
@@ -132,9 +136,12 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 1000:
-                    //닉네임 가져옴
-                    userName = data.getStringExtra("Name");
-                    onReload();
+                    // 로그인 작업을 시작함
+                    cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, this);
+                    String deviceUUID = cfgMgr.get().getString(ConfigKeys.KEY_DEVICE_UUID, null);
+
+                    AuthmeModule authmeMd = new AuthmeModule(deviceUUID, this);
+                    authmeMd.run();
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
@@ -144,5 +151,29 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    // 장치 인증 결과
+    @Override
+    public void onAuthme(boolean isSucc, AuthmeObject authme) {
+        if(!isSucc) {
+            // 실패 시
+            DialogManager dm = new DialogManager(this);
+            dm.setTitle("인증 실패");
+            dm.setDescription("장치 인증에 실패하였습니다!");
+            dm.setOnYesButtonClickListener(this, "앱 종료");
+            dm.show();
+
+            cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, this);
+            cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, null);
+        } else {
+            Toast.makeText(getApplicationContext(), authme.getNickname() + "님 환영합니다.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog) {
+        dialog.dismiss();
+        finish();
     }
 }

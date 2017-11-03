@@ -21,6 +21,7 @@ import kr.co.aperturedev.callmyadminc.internet.http.OnHttpRequestListener;
 import kr.co.aperturedev.callmyadminc.internet.http.RequestURLS;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigManager;
+import kr.co.aperturedev.callmyadminc.view.custom.ProgressManager;
 import kr.co.aperturedev.callmyadminc.view.custom.dialog.custom.NicknameWriteDialog;
 
 /**
@@ -133,13 +134,60 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     } else {
                         this.nickWriteDialog.disable();
-                        loginSuccess(this.naverUUID, nickname);
+
+                        // HTTP 요청을 통해 장치를 가입시킵니다.
+                        try {
+                            JSONObject registJSONObj = new JSONObject();
+                            registJSONObj.put("user-nickname", nickname);
+                            registJSONObj.put("device-uuid", naverUUID);
+
+                            // Progress 를 띄웁니다.
+                            ProgressManager pm = new ProgressManager(context);
+                            pm.setMessage("Now loading...");
+                            pm.setCancelable(false);
+                            pm.enable();
+
+                            HttpRequester registRequester = new HttpRequester(registJSONObj, RequestURLS.DEVICE_REGIST);
+                            registRequester.setListener(new OnDeviceResgistListener(pm, nickname));
+                            registRequester.start();
+                        } catch(Exception ex) {
+                            Toast.makeText(context, "엔진 오류가 발생하였습니다. 다시 시도하세요.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                     }
                 }
             }
 
+            class OnDeviceResgistListener implements OnHttpRequestListener {
+                private ProgressManager pm = null;
+                private String nick = null;
+
+                public OnDeviceResgistListener(ProgressManager pm, String nickname) {
+                    this.pm = pm;
+                    this.nick = nickname;
+                }
+
+                @Override
+                public void onResponse(boolean isSucc, JSONObject jsonObj) {
+                    this.pm.disable();
+
+                    try {
+                        if (!isSucc || jsonObj.getString("client-uuid") == null) {
+                            Toast.makeText(context, "HTTP 요청 실패로 가입 할 수 없습니다.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    } catch(Exception ex) {
+                        Toast.makeText(context, "응답 에러 500", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+
+                    loginSuccess(naverUUID, this.nick);
+                }
+            }
+
             @Override
-            public void onRequest(boolean isSucc, JSONObject jsonObj) {
+            public void onResponse(boolean isSucc, JSONObject jsonObj) {
                 if(!isSucc) {
                     // 요청 실패시 실행 중지
                     Toast.makeText(LoginActivity.this, "HTTP 요청 Fail!!", Toast.LENGTH_SHORT).show();
@@ -173,8 +221,7 @@ public class LoginActivity extends AppCompatActivity {
                 ConfigManager cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, LoginActivity.this);
                 cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, uuid);
 
-                // 닉넴 메인으로 넘겨줌 (나중에는 서버가 처리할부분)
-                i.putExtra("Name", nickname);
+                // 액티비티 종료
                 setResult(RESULT_OK, i);
                 finish();
             }

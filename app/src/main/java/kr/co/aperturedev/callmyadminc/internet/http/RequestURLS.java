@@ -14,6 +14,7 @@ public interface RequestURLS {
 
     // Read
     String DEVICE_CHECK_REGIST = DEFAULT_URL + "read/device-isregist.jsp";
+    String DEVICE_AUTHME = DEFAULT_URL + "read/device-authme.jsp";
 
     // Delete
 }

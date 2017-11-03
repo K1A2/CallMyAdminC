@@ -7,5 +7,5 @@ import org.json.JSONObject;
  */
 
 public interface OnHttpRequestListener {
-    void onRequest(boolean isSucc, JSONObject jsonObj);
+    void onResponse(boolean isSucc, JSONObject jsonObj);
 }
