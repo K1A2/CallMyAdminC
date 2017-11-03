@@ -1,7 +1,8 @@
 package kr.co.aperturedev.callmyadminc.internet.tcp.packet;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RequestPacket {
 	private JSONObject jsonObj = null;
@@ -12,14 +13,18 @@ public class RequestPacket {
 	
 	public RequestPacket(String command) {
 		this.jsonObj = new JSONObject();
-		this.jsonObj.put("client-body-command", command);
+		try {
+			this.jsonObj.put("client-body-command", command);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setArgs(Object[] args) {
 		this.args = new JSONArray();
 		
 		for(Object obj : args) {
-			this.args.add(obj);
+			this.args.put(obj);//add(obj);
 		}
 	}
 	
@@ -32,11 +37,15 @@ public class RequestPacket {
 	}
 	
 	public String getJSONScript() {
-		this.jsonObj.put("client-header-type", this.header);
-		this.jsonObj.put("client-body-args", this.args);
-		this.jsonObj.put("client-header-requestcode", this.requestCode);
-		this.jsonObj.put("client-footer-requesttime", System.currentTimeMillis());
+		try {
+			this.jsonObj.put("client-header-type", this.header);
+			this.jsonObj.put("client-body-args", this.args);
+			this.jsonObj.put("client-header-requestcode", this.requestCode);
+			this.jsonObj.put("client-footer-requesttime", System.currentTimeMillis());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		
-		return this.jsonObj.toJSONString();
+		return this.jsonObj.toString();
 	}
 }
