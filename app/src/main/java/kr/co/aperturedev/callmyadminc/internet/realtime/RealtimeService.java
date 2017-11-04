@@ -3,7 +3,6 @@ package kr.co.aperturedev.callmyadminc.internet.realtime;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -32,30 +31,11 @@ public class RealtimeService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         if(!isConnected) {
-            //this.connectThread = new RealtimeThread();
-            //this.connectThread.start();
-            Test t = new Test();
-            t.start();
+            this.connectThread = new RealtimeThread();
+            this.connectThread.start();
         }
 
         return START_REDELIVER_INTENT;
-    }
-
-    class Test extends Thread {
-        @Override
-        public void run() {
-            isConnected = true;
-            try {
-                int i = 0;
-                while (true) {
-                    Thread.sleep(1000);
-                    Log.e("숫자", String.valueOf(i));
-                    i ++;
-                }
-            } catch(Exception ex) {
-
-            }
-        }
     }
 
     class RealtimeThread extends Thread {
@@ -70,9 +50,16 @@ public class RealtimeService extends Service {
         @Override
         public void run() {
             try {
-                this.socket.connect(this.sockAddr);
-            } catch(Exception ex) {
+                SocketAddress sockAddr = new InetSocketAddress(ServerHost.SERVER_HOST, ServerHost.SERVER_PORT);
+                this.socket.connect(sockAddr, ServerHost.TIME_OUT);
 
+                NetRequester requester = new NetRequester(socket);
+                NetResponser responser = new NetResponser(socket);
+                responser.start();
+
+                isConnected = true;
+            } catch(Exception ex) {
+                stopSelf();
             }
         }
     }
