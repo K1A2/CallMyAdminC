@@ -112,14 +112,9 @@ public class TabHost extends AppCompatActivity implements OnAuthmeListener, OnYe
             cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, this);
             cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, null);
         } else {
-            //툴바
-            toolbar = (Toolbar)findViewById(R.id.Toolbar);
-            setSupportActionBar(toolbar);
 
             tabLayout = (TabLayout)findViewById(R.id.TabLayout);
             tabLayout.addTab(tabLayout.newTab().setText("서버목록"));
-            tabLayout.addTab(tabLayout.newTab().setText("서버추가"));
-            tabLayout.addTab(tabLayout.newTab().setText("앱상태"));
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
             viewPager = (ViewPager)findViewById(R.id.ViewPager);

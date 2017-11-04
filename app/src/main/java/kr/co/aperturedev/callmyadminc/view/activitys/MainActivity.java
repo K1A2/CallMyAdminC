@@ -65,7 +65,7 @@ public class MainActivity extends Fragment {
         serverListAdapter.addItem("TestServer", "Admin: K1A2", "People: 123456789000000");
         serverListAdapter.addItem("TestServer2222", "Admin: ...?", "People: 0");
 
-        listServer.setAdapter(serverListAdapter);
+        listServer.setAdapter(serverListAdapter);//
 
         //리스트뷰 롱클릭 처리
         listServer.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
