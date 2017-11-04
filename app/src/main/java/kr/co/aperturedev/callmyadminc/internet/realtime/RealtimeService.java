@@ -50,17 +50,20 @@ public class RealtimeService extends Service {
         @Override
         public void run() {
             try {
-                SocketAddress sockAddr = new InetSocketAddress(ServerHost.SERVER_HOST, ServerHost.SERVER_PORT);
-                this.socket.connect(sockAddr, ServerHost.TIME_OUT);
+                this.socket.connect(this.sockAddr, ServerHost.TIME_OUT);
 
-                NetRequester requester = new NetRequester(socket);
-                NetResponser responser = new NetResponser(socket);
-                responser.start();
+                new NetRequester(socket);
+                new NetResponser(socket).start();
 
                 isConnected = true;
             } catch(Exception ex) {
+                isConnected = false;
                 stopSelf();
             }
+
+            Intent intent = new Intent("kr.co.aperturedev.callmyadminc.onconnect");
+            intent.putExtra("is-connect", isConnected);
+            sendBroadcast(intent);
         }
     }
 

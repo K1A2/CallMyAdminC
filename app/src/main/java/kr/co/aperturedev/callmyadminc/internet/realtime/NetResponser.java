@@ -1,12 +1,12 @@
 package kr.co.aperturedev.callmyadminc.internet.realtime;
 
+import android.util.Log;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
-
-import kr.co.aperturedev.callmyadminc.internet.realtime.packet.ResponsePacket;
 
 /**
  * Created by 5252b on 2017-11-04.
@@ -32,7 +32,8 @@ public class NetResponser extends Thread {
         while(true) {
             try {
                 String jsonScript = this.dis.readUTF();
-                ResponsePacket respPacket = new ResponsePacket(jsonScript);
+                Log.e("cma", "응답 성공!!\n" + jsonScript);
+//                ResponsePacket respPacket = new ResponsePacket(jsonScript);
             } catch(SocketException ex) {
                 // 서버와 연결 끊김
             } catch(Exception ex) {
@@ -42,7 +43,7 @@ public class NetResponser extends Thread {
         }
     }
 
-    public void addListener() {
-
+    public void addListener(String reqCode, OnResponseListener listener) {
+        this.listeners.put(reqCode, listener);
     }
 }
