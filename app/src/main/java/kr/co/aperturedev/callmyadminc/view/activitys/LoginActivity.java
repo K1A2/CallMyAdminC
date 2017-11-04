@@ -220,6 +220,9 @@ public class LoginActivity extends AppCompatActivity {
                 // UUID 값 저장
                 ConfigManager cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, LoginActivity.this);
                 cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, uuid);
+                if (nickname != null) {
+                    cfgMgr.put(ConfigKeys.KEY_USER_NICKNAME, nickname);
+                }
 
                 // 액티비티 종료
                 setResult(RESULT_OK, i);

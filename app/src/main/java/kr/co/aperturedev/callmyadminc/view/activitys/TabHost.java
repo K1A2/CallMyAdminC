@@ -51,33 +51,6 @@ public class TabHost extends AppCompatActivity implements OnAuthmeListener, OnYe
         }
     }
 
-    //액션바 메뉴생성
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.actionbar_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    //액션바 아이템 클릭 리스너
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.action_addsv:
-                //디버그용 토스트
-                Toast.makeText(this, "서버추가 클릭", Toast.LENGTH_SHORT).show();
-
-                //서버 추가하는 프레그먼트 다이얼로그 띄움
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                addServer = new AddServer();
-                addServer.show(fragmentManager, "addServer");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -118,6 +91,8 @@ public class TabHost extends AppCompatActivity implements OnAuthmeListener, OnYe
 
             tabLayout = (TabLayout)findViewById(R.id.TabLayout);
             tabLayout.addTab(tabLayout.newTab().setText("서버목록"));
+            tabLayout.addTab(tabLayout.newTab().setText("서버추가"));
+            tabLayout.addTab(tabLayout.newTab().setText("앱상태"));
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
             viewPager = (ViewPager)findViewById(R.id.ViewPager);

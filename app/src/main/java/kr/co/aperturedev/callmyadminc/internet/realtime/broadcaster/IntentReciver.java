@@ -5,7 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-public class TestReciver extends BroadcastReceiver {
+public class IntentReciver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String name = intent.getAction();

@@ -8,4 +8,5 @@ package kr.co.aperturedev.callmyadminc.module.configure;
 public interface ConfigKeys {
     String KEY_REPOSITORY = "callmyadminc";
     String KEY_DEVICE_UUID = "callmyadminc.device_uuid";    // 장치 고유 번호 키값
+    String KEY_USER_NICKNAME = "callmyadminc.user_nickname";//유저닉네임
 }

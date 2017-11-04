@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import kr.co.aperturedev.callmyadminc.AddServer;
 import kr.co.aperturedev.callmyadminc.R;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigManager;
@@ -30,7 +29,6 @@ public class MainActivity extends Fragment {
     private ViewPager viewPager;
 
     //잡것(?)
-    private AddServer addServer = null;
     private String userName = "";
     private ConfigManager cfgMgr;
     private ServerListItem serverListItem;
@@ -39,6 +37,7 @@ public class MainActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.activity_main, container, false);
+        onReload();
         return root;
     }
 
@@ -49,8 +48,9 @@ public class MainActivity extends Fragment {
     private void onReload() {
         //닉네임=UUID라고 가정(실제론 서버에서 다 가져옴)
         txtName = (TextView)root.findViewById(R.id.Text_name);//일딴 닉넴표시 테스트 용도
+        cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, getContext());
         if (userName.length() == 0) {
-            userName = cfgMgr.get().getString(ConfigKeys.KEY_DEVICE_UUID, null);
+            userName = cfgMgr.get().getString(ConfigKeys.KEY_USER_NICKNAME, null);
         }
         txtName.setText(userName + "님 서버 목록");
 

@@ -3,6 +3,7 @@ package kr.co.aperturedev.callmyadminc.internet.realtime;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -30,6 +31,7 @@ public class RealtimeService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        Log.e("리얼타임", "리얼타임 시작");
         if(!isConnected) {
             this.connectThread = new RealtimeThread();
             this.connectThread.start();
@@ -49,6 +51,7 @@ public class RealtimeService extends Service {
 
         @Override
         public void run() {
+            Log.e("스레드", "리얼타임 스레드 시작");
             try {
                 this.socket.connect(this.sockAddr, ServerHost.TIME_OUT);
 

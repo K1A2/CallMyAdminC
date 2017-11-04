@@ -19,37 +19,6 @@
             android:layout_height="match_parent"
             android:id="@+id/List_sv"></ListView>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/Layput_Pin"
-            android:visibility="invisible">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:hint="핀 입력"
-                android:id="@+id/Edit_Pin"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/Edit_Pin"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="2dp"
-                android:text="핀 입력 모르겠으때 설명" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:id="@+id/Button_InputPin"
-                android:text="입력"/>
-
-        </RelativeLayout>
-
     </RelativeLayout>
 
 </LinearLayout>

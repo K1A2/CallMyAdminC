@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import kr.co.aperturedev.callmyadminc.view.activitys.AddServerActivity;
+import kr.co.aperturedev.callmyadminc.view.activitys.AppStatusActivity;
 import kr.co.aperturedev.callmyadminc.view.activitys.MainActivity;
 
 /**
@@ -27,6 +29,12 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 MainActivity mainActivity = new MainActivity();
                 return mainActivity;
+            case 1:
+                AddServerActivity addServerActivity = new AddServerActivity();
+                return addServerActivity;
+            case 2:
+                AppStatusActivity appStatusActivity = new AppStatusActivity();
+                return appStatusActivity;
             default:
                 return null;
         }
