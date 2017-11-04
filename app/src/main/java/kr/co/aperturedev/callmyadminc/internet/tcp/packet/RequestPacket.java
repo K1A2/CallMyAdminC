@@ -1,7 +1,9 @@
 package kr.co.aperturedev.callmyadminc.internet.tcp.packet;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RequestPacket {
 	private JSONObject jsonObj = null;
@@ -10,7 +12,7 @@ public class RequestPacket {
 	private String header = null;
 	private String requestCode = null;
 	
-	public RequestPacket(String command) {
+	public RequestPacket(String command) throws JSONException{
 		this.jsonObj = new JSONObject();
 		this.jsonObj.put("client-body-command", command);
 	}
@@ -19,7 +21,7 @@ public class RequestPacket {
 		this.args = new JSONArray();
 		
 		for(Object obj : args) {
-			this.args.add(obj);
+			this.args.put(obj);
 		}
 	}
 	
@@ -31,12 +33,12 @@ public class RequestPacket {
 		this.header = header;
 	}
 	
-	public String getJSONScript() {
+	public String getJSONScript() throws JSONException {
 		this.jsonObj.put("client-header-type", this.header);
 		this.jsonObj.put("client-body-args", this.args);
 		this.jsonObj.put("client-header-requestcode", this.requestCode);
 		this.jsonObj.put("client-footer-requesttime", System.currentTimeMillis());
 		
-		return this.jsonObj.toJSONString();
+		return this.jsonObj.toString();
 	}
 }

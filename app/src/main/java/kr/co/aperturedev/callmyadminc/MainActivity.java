@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,12 +16,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import kr.co.aperturedev.callmyadminc.internet.tcp.OnConnectListener;
+import kr.co.aperturedev.callmyadminc.internet.tcp.RealtimeConnector;
 import kr.co.aperturedev.callmyadminc.module.authme.AuthmeModule;
 import kr.co.aperturedev.callmyadminc.module.authme.AuthmeObject;
 import kr.co.aperturedev.callmyadminc.module.authme.OnAuthmeListener;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigKeys;
 import kr.co.aperturedev.callmyadminc.module.configure.ConfigManager;
 import kr.co.aperturedev.callmyadminc.view.activitys.LoginActivity;
+import kr.co.aperturedev.callmyadminc.view.custom.ProgressManager;
 import kr.co.aperturedev.callmyadminc.view.custom.dialog.main.DialogManager;
 import kr.co.aperturedev.callmyadminc.view.custom.dialog.main.clicklistener.OnYesClickListener;
 import kr.co.aperturedev.callmyadminc.view.list.ServerListAdapter;
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnAuthmeListener,
             // 인증 모듈을 사용하여 장치 인증
             AuthmeModule authmeMd = new AuthmeModule(deviceUUID, this);
             authmeMd.run();
+            Log.d("cma", "onCreate 에서 요청");
         }
     }
 
@@ -142,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements OnAuthmeListener,
 
                     AuthmeModule authmeMd = new AuthmeModule(deviceUUID, this);
                     authmeMd.run();
+                    Log.d("cma", "onActivityResult 에서 요청");
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
@@ -156,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements OnAuthmeListener,
     // 장치 인증 결과
     @Override
     public void onAuthme(boolean isSucc, AuthmeObject authme) {
+        Log.d("cma", isSucc + "입니다.");
+
         if(!isSucc) {
             // 실패 시
             DialogManager dm = new DialogManager(this);
@@ -168,6 +176,29 @@ public class MainActivity extends AppCompatActivity implements OnAuthmeListener,
             cfgMgr.put(ConfigKeys.KEY_DEVICE_UUID, null);
         } else {
             Toast.makeText(getApplicationContext(), authme.getNickname() + "님 환영합니다.", Toast.LENGTH_LONG).show();
+
+            // 서버와 연결 합니다.
+            ProgressManager pm = new ProgressManager(this);
+            pm.setCancelable(false);
+            pm.setMessage("Now connecting...");
+            pm.enable();
+
+            RealtimeConnector conn = new RealtimeConnector();
+            conn.connect(new OnServerConnectListener(pm));
+        }
+    }
+
+    class OnServerConnectListener implements OnConnectListener {
+        private ProgressManager pm = null;
+
+        public OnServerConnectListener(ProgressManager pm) {
+            this.pm = pm;
+        }
+
+        @Override
+        public void onConnect(boolean isConnect) {
+            Log.d("cma", "리얼타인 : " + isConnect);
+            this.pm.disable();
         }
     }
 

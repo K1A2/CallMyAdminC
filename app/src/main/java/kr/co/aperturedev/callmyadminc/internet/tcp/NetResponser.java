@@ -6,7 +6,6 @@ import android.os.Message;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.HashMap;
 
 import kr.co.aperturedev.callmyadminc.internet.tcp.packet.ResponsePacket;
@@ -15,7 +14,7 @@ import kr.co.aperturedev.callmyadminc.internet.tcp.packet.ResponsePacket;
  * Created by 5252b on 2017-11-03.
  */
 
-public class NetResponser extends Thread {
+public class NetResponser extends Thread implements OnConnectListener {
     private Socket socket = null;
     private DataInputStream dis = null;
     private HashMap<String, OnResponseListener> listeners = null;
@@ -39,13 +38,16 @@ public class NetResponser extends Thread {
             Message msg = Message.obtain();
             msg.obj = respPacket;
             this.switcher.handleMessage(msg);
-        } catch(SocketException sex) {
-            // 서버와 연결이 종료된경우
-
-        } catch(IOException iex) {
-
         } catch(Exception ex) {
+            RealtimeConnector.connector.reconnect(this);
+            return;
+        }
+    }
 
+    @Override
+    public void onConnect(boolean isConnect) {
+        if(!isConnect) {
+            RealtimeConnector.connector.reconnect(this);
         }
     }
 
