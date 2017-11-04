@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import kr.co.aperturedev.callmyadminc.R;
 import kr.co.aperturedev.callmyadminc.TabPagerAdapter;
+import kr.co.aperturedev.callmyadminc.internet.realtime.RealtimeService;
 import kr.co.aperturedev.callmyadminc.module.authme.AuthmeModule;
 import kr.co.aperturedev.callmyadminc.module.authme.AuthmeObject;
 import kr.co.aperturedev.callmyadminc.module.authme.OnAuthmeListener;
@@ -143,6 +144,9 @@ public class TabHost extends AppCompatActivity implements OnAuthmeListener, OnYe
             });
 
             Toast.makeText(getApplicationContext(), authme.getNickname() + "님 환영합니다.", Toast.LENGTH_LONG).show();
+
+            Intent connector = new Intent(this, RealtimeService.class);
+            startService(connector);
         }
     }
 

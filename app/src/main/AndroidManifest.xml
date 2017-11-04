@@ -31,6 +31,9 @@
         <activity android:name=".view.activitys.LoginActivity"
             android:screenOrientation="portrait"
             android:label="로그인" />
+
+        <service android:name=".internet.realtime.RealtimeService"
+            android:enabled="true"/>
     </application>
 
 </manifest>
