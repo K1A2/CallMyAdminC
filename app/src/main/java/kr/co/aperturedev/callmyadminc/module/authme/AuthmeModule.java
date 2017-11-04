@@ -53,6 +53,7 @@ public class AuthmeModule implements OnHttpRequestListener {
         } catch(Exception ex) {
             // 오류 발생 시
             this.listener.onAuthme(false, null);
+            ex.printStackTrace();
         }
     }
 }

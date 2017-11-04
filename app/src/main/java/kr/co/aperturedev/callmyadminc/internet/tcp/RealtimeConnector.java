@@ -26,7 +26,7 @@ public class RealtimeConnector {
     public static NetRequester requester = null;        // 요청 관리자
     public static NetResponser responser = null;        // 응답 관리자
 
-    public RealtimeConnector() {
+    public RealtimeConnector(String a) {
         this.sockAddr = new InetSocketAddress(SocketConstant.SERVER_HOST, SocketConstant.SERVER_PORT);
         this.switcher = new SwitchMainThread();
         RealtimeConnector.connector = this;

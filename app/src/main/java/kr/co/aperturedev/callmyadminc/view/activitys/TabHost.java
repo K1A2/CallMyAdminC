@@ -37,6 +37,8 @@ public class TabHost extends AppCompatActivity implements OnAuthmeListener, OnYe
         cfgMgr = new ConfigManager(ConfigKeys.KEY_REPOSITORY, this);
         String deviceUUID = cfgMgr.get().getString(ConfigKeys.KEY_DEVICE_UUID, null);
 
+        getSupportActionBar().hide();
+
         if(deviceUUID == null) {
             // 로그인 화면으로 이동
             Intent login = new Intent(this, LoginActivity.class);
