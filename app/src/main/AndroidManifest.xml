@@ -35,9 +35,14 @@
         <service android:name=".internet.realtime.RealtimeService"
             android:enabled="true"/>
 
-        <receiver android:name=".internet.realtime.broadcaster.IntentReciver">
+        <receiver android:name=".internet.realtime.broadcaster.OnConnectBroadcast">
             <intent-filter>
                 <action android:name="kr.co.aperturedev.callmyadminc.onconnect"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".internet.realtime.broadcaster.OnResponseBroadcast">
+            <intent-filter>
+                <action android:name="kr.co.aperturedev.callmyadminc.onresponse"/>
             </intent-filter>
         </receiver>
     </application>
