@@ -12,9 +12,9 @@ import android.support.v7.widget.Toolbar;
 
 import kr.co.aperturedev.callmyadminc.R;
 import kr.co.aperturedev.callmyadminc.TabPagerAdapter;
-import kr.co.aperturedev.callmyadminc.internet.realtime.OnConnectListener;
 import kr.co.aperturedev.callmyadminc.internet.realtime.RealtimeService;
 import kr.co.aperturedev.callmyadminc.internet.realtime.broadcaster.OnConnectBroadcast;
+import kr.co.aperturedev.callmyadminc.internet.realtime.listeners.OnConnectListener;
 import kr.co.aperturedev.callmyadminc.module.authme.AuthmeModule;
 import kr.co.aperturedev.callmyadminc.module.authme.AuthmeObject;
 import kr.co.aperturedev.callmyadminc.module.authme.OnAuthmeListener;
@@ -55,8 +55,8 @@ public class TabHost extends AppCompatActivity implements OnAuthmeListener, OnYe
             this.pm.setCancelable(false);
             this.pm.enable();
 
-            OnConnectBroadcast.clearListener();
-            OnConnectBroadcast.addListener(this);
+            // 리스너 등록
+            OnConnectBroadcast.listener = this;
 
             Intent connector = new Intent(this, RealtimeService.class);
             startService(connector);
@@ -164,7 +164,6 @@ public class TabHost extends AppCompatActivity implements OnAuthmeListener, OnYe
     @Override
     public void onConnect(boolean isConnect) {
         this.pm.disable();
-        OnConnectBroadcast.clearListener();
 
         DialogManager dm = new DialogManager(this);
         dm.setTitle("네트워크 오류");

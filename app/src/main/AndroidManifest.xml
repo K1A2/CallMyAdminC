@@ -33,16 +33,21 @@
             android:label="로그인" />
 
         <service android:name=".internet.realtime.RealtimeService"
-            android:enabled="true"/>
+            android:enabled="true" />
 
-        <receiver android:name=".internet.realtime.broadcaster.OnConnectBroadcast">
-            <intent-filter>
-                <action android:name="kr.co.aperturedev.callmyadminc.onconnect"/>
-            </intent-filter>
-        </receiver>
         <receiver android:name=".internet.realtime.broadcaster.OnResponseBroadcast">
             <intent-filter>
-                <action android:name="kr.co.aperturedev.callmyadminc.onresponse"/>
+                <action android:name="kr.co.aperturedev.callmyadminc.onreceive" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".internet.realtime.broadcaster.OnConnectBroadcast">
+            <intent-filter>
+                <action android:name="kr.co.aperturedev.callmyadminc.onconnect" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".internet.realtime.broadcaster.OnDisconnectBroadcast">
+            <intent-filter>
+                <action android:name="kr.co.aperturedev.callmyadminc.ondisconnect" />
             </intent-filter>
         </receiver>
     </application>

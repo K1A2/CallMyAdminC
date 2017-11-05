@@ -1,13 +1,12 @@
-package kr.co.aperturedev.callmyadminc.internet.realtime;
-
-/*
- * (c) 2017 Aperture software.
- * 데이터 송신 처리기
- */
+package kr.co.aperturedev.callmyadminc.internet.realtime.engine;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+
+/**
+ * Created by 5252b on 2017-11-05.
+ */
 
 public class NetRequester {
     private Socket socket = null;
@@ -27,6 +26,7 @@ public class NetRequester {
             this.dos.writeUTF(jsonScript);
             return true;
         } catch(Exception ex) {
+            NetRequester.requester = null;
             return false;
         }
     }
