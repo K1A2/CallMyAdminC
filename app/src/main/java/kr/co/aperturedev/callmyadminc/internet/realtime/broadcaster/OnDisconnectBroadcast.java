@@ -21,6 +21,6 @@ public class OnDisconnectBroadcast extends BroadcastReceiver {
 
         // 네트워크 끊어짐. 다시 연결 함
         Intent req = new Intent(context, RealtimeService.class);
-        context.sendBroadcast(req);
+        context.startService(req);
     }
 }

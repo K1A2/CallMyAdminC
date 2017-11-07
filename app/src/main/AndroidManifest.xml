@@ -50,6 +50,11 @@
                 <action android:name="kr.co.aperturedev.callmyadminc.ondisconnect" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".internet.realtime.broadcaster.OnBootingBroadcast">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

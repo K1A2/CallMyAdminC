@@ -28,6 +28,14 @@ public class NetResponser extends Thread {
 
     @Override
     public void run() {
+        try {
+            this.dis = new DataInputStream(this.socket.getInputStream());
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            disconnected();
+            return;
+        }
+
         while(true) {
             try {
                 String jsonScript = this.dis.readUTF();
@@ -39,7 +47,8 @@ public class NetResponser extends Thread {
 
                 Log.d("cma", "받은 데이터 : " + jsonScript);
                 received(jsonScript);
-            } catch(Exception sex) {
+            } catch(Exception ex) {
+                ex.printStackTrace();
                 disconnected();
                 return;
             }
@@ -56,5 +65,9 @@ public class NetResponser extends Thread {
         Intent intent = new Intent("kr.co.aperturedev.callmyadminc.onreceive");
         intent.putExtra("json-script", jsonScript);
         this.context.sendBroadcast(intent);
+    }
+
+    public Socket getSocket() {
+        return this.socket;
     }
 }

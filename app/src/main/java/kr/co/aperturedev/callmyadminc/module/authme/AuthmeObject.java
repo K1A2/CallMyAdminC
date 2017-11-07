@@ -13,10 +13,14 @@ public class AuthmeObject {
     private int code = 0;               // 코드 (닉네임#코드)
     private String uuid = null;         // 서버 측 고유 번호 (장치 고유번호와 다름)
 
+    private JSONObject returnData = null;   // 인증 문서 원본
+
     public AuthmeObject(JSONObject returnData) throws JSONException {
         this.nickname = returnData.getString("adm-nickname");
         this.code = returnData.getInt("adm-code");
         this.uuid = returnData.getString("adm-uuid");
+
+        this.returnData = returnData;
     }
 
     public String getNickname() {
@@ -29,5 +33,9 @@ public class AuthmeObject {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public String getObjectJSONScript() {
+        return this.returnData.toString();
     }
 }

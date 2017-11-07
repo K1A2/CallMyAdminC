@@ -10,7 +10,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-import kr.co.aperturedev.callmyadminc.internet.realtime.engine.NetRequester;
 import kr.co.aperturedev.callmyadminc.internet.realtime.engine.NetResponser;
 
 /**
@@ -18,7 +17,6 @@ import kr.co.aperturedev.callmyadminc.internet.realtime.engine.NetResponser;
  */
 
 public class RealtimeService extends Service {
-    private long lastReconnectTime = 0;
 
     @Override
     public void onCreate() {
@@ -58,22 +56,18 @@ public class RealtimeService extends Service {
         public void run() {
             boolean isConnect = false;
 
-            if(System.currentTimeMillis() - lastReconnectTime > 5000) {
-                try {
-                    // 서버와 연결 시도
-                    Socket socket = new Socket();
-                    socket.connect(this.addr, NetworkHost.TIME_OUT);
+            try {
+                // 서버와 연결 시도
+                Socket socket = new Socket();
+                socket.connect(this.addr, NetworkHost.TIME_OUT);
+                Thread.sleep(2000);
 
-                    new NetResponser(socket, getApplicationContext()).start();
-                    new NetRequester(socket);
+                new NetResponser(socket, getApplicationContext()).start();
 
-                    isConnect = true;
-                } catch (Exception ex) {
-                    // 서버와 연결 할 수 없슴.
-                    isConnect = false;
-                }
-
-                lastReconnectTime = System.currentTimeMillis();
+                isConnect = true;
+            } catch (Exception ex) {
+                // 서버와 연결 할 수 없슴.
+                isConnect = false;
             }
 
             Intent intent = new Intent("kr.co.aperturedev.callmyadminc.onconnect");
