@@ -5,9 +5,9 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="40dp"
-        android:text="앱상태"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/status_ping_result"
+        android:text="핑 계산 중..."
+        />
 
 </LinearLayout>

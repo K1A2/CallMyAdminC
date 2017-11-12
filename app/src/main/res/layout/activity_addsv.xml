@@ -1,24 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:padding="5dp" android:orientation="vertical">
-
-    <TextView
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="자신의 서버를 선택하세요"
-        android:textSize="20dp"
-        android:layout_marginBottom="2dp"/>
+        android:id="@+id/addsv_search_editor"
+        android:background="@color/colorWhiteLight"
+        android:padding="10dp"
+        android:hint="서버 검색"
+        android:textColor="#333333"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:singleLine="true"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_below="@id/addsv_search_editor"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="28dp">
+        <!-- 서버 검색 후 이 리스트뷰를 사용한다. -->
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/List_sv"></ListView>
+            android:id="@+id/addsv_server_list"
+            android:visibility="gone"></ListView>
 
+        <!-- 검색 전에는 이 화면을 보여준다 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addsv_server_list_prep"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="서버를 검색하세요."
+            android:textSize="14sp"/>
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
