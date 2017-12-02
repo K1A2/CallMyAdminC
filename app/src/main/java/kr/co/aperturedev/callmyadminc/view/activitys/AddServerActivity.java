@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import kr.co.aperturedev.callmyadminc.R;
@@ -20,6 +22,7 @@ import kr.co.aperturedev.callmyadminc.internet.http.HttpRequester;
 import kr.co.aperturedev.callmyadminc.internet.http.OnHttpRequestListener;
 import kr.co.aperturedev.callmyadminc.internet.http.RequestURLS;
 import kr.co.aperturedev.callmyadminc.view.custom.ProgressManager;
+import kr.co.aperturedev.callmyadminc.view.list.ServerListAdapter;
 
 /**
  * Created by jckim on 2017-10-29.
@@ -29,6 +32,7 @@ public class AddServerActivity extends Fragment {
     private EditText searchBar = null;          // 검색 창
     private TextView serverListPrep = null;     // 검색 준비
     private ListView serverList = null;         // 검색 결과
+    private ServerListAdapter serverListAdapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,6 +41,8 @@ public class AddServerActivity extends Fragment {
         this.searchBar.setOnEditorActionListener(new OnSearchBarActionListener());
         this.serverList = (ListView) root.findViewById(R.id.addsv_server_list);
         this.serverListPrep = (TextView) root.findViewById(R.id.addsv_server_list_prep);
+
+        serverListAdapter = new ServerListAdapter();
 
         return root;
     }
@@ -81,7 +87,18 @@ public class AddServerActivity extends Fragment {
                 serverListPrep.setVisibility(View.INVISIBLE);
 
                 //리스트뷰에 표시
+                try {
+                    JSONArray serverNameArray = (JSONArray) jsonObj.get("server-names");
+                    JSONArray serverAdminArray = (JSONArray) jsonObj.get("server-admins");
 
+                    for (int i = 0;i < serverAdminArray.length();i++) {
+                        serverListAdapter.addItem((String) serverNameArray.get(i), "Admin: " + (String) serverAdminArray.get(i), "");
+                    }
+
+                    serverList.setAdapter(serverListAdapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             } else {
                 serverList.setVisibility(View.INVISIBLE);
                 serverListPrep.setVisibility(View.VISIBLE);
