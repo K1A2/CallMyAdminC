@@ -3,6 +3,7 @@ package kr.co.aperturedev.callmyadminc.internet.realtime.broadcaster;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class OnConnectBroadcast extends BroadcastReceiver {
     public static OnConnectListener listener = null;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         String name = intent.getAction();
         if(!name.equals("kr.co.aperturedev.callmyadminc.onconnect"))  return;
 
@@ -44,8 +45,13 @@ public class OnConnectBroadcast extends BroadcastReceiver {
 
         if(!isConnect) {
             // 연결 실패? 재연결 시도
-            Intent connector = new Intent(context, RealtimeService.class);
-            context.startService(connector);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent connector = new Intent(context, RealtimeService.class);
+                    context.startService(connector);
+                }
+            }, 5000);
             return;
         }
 

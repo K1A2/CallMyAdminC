@@ -84,6 +84,6 @@ public class MainActivity extends Fragment {
                 alert.show();
                 return true;
             }
-        });//
+        });
     }
 }

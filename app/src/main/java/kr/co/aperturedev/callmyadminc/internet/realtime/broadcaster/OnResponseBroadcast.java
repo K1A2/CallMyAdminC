@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+import kr.co.aperturedev.callmyadminc.core.context.excuter.ServerRequestExcuter;
 import kr.co.aperturedev.callmyadminc.internet.realtime.listeners.OnResponseListener;
 import kr.co.aperturedev.callmyadminc.internet.realtime.packet.ResponsePacket;
 
@@ -29,6 +30,12 @@ public class OnResponseBroadcast extends BroadcastReceiver {
 
             if(listener != null) {
                 listener.onResponse(respPacket);
+            } else {
+                String header = respPacket.getHeader();
+                if (header.equals("server-request")) {
+                    ServerRequestExcuter serverRequestExcuter = new ServerRequestExcuter(respPacket, context);
+                    serverRequestExcuter.requestExqute();
+                }
             }
         } catch(Exception ex) {
             Log.e("cma", "Packet 누락!!" + jsonScript.length() + "Bytes");

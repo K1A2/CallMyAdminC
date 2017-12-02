@@ -79,6 +79,9 @@ public class AddServerActivity extends Fragment {
             if(isSucc) {
                 serverList.setVisibility(View.VISIBLE);
                 serverListPrep.setVisibility(View.INVISIBLE);
+
+                //리스트뷰에 표시
+
             } else {
                 serverList.setVisibility(View.INVISIBLE);
                 serverListPrep.setVisibility(View.VISIBLE);
